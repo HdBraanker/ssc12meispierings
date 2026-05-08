@@ -510,6 +510,23 @@
   document.body.setAttribute('data-no-particles', '');
   // showFlowGuides: true (no attribute set)
   window.__SSC_PLAY_MS = 2600;
+
+  // Single-slide deck: disable deck-stage's mobile tap-zones so taps reach the SVG nodes.
+  const disableTapzones = () => {
+    const ds = document.querySelector('deck-stage');
+    if (!ds || !ds.shadowRoot) return false;
+    if (ds.shadowRoot.getElementById('disable-tapzones')) return true;
+    const s = document.createElement('style');
+    s.id = 'disable-tapzones';
+    s.textContent = '.tapzones { display: none !important; }';
+    ds.shadowRoot.appendChild(s);
+    return true;
+  };
+  if (!disableTapzones()) {
+    customElements.whenDefined('deck-stage').then(() => {
+      if (!disableTapzones()) requestAnimationFrame(disableTapzones);
+    });
+  }
 })();
 </script>
 
